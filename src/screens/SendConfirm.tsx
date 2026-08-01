@@ -76,8 +76,6 @@ interface ChangeTarget {
   scriptType: ScriptType;
 }
 
-const outpointId = (txid: string, vout: number): string => `${txid}:${vout}`;
-
 const coinIdentity = (walletId: string, utxo: Utxo): string => {
   const txid = (utxo.txid ?? utxo.tx_hash ?? '') as string;
   const vout = (utxo.vout ?? utxo.tx_pos ?? 0) as number;

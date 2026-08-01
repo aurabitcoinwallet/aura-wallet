@@ -11,7 +11,6 @@ import { AppState, I18nManager } from 'react-native';
 import loc, { setLanguage as saveLanguage } from '../i18n';
 import type {
   DisplayUnit,
-  FiatSource,
   FiatUnit,
   HistoryTx,
   MultisigHoldingResponse,

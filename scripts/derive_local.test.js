@@ -103,3 +103,4 @@ check('BIP39 passphrase yields a DIFFERENT wallet (sanity)',
 console.log(`\n${pass} passed, ${fail} failed.`);
 console.log('No network calls were made. The seed was used only in-process to derive keys.');
 process.exit(fail ? 1 : 0);
+/* global TextEncoder, BigInt */

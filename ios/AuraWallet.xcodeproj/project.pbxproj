@@ -259,7 +259,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 272720;
 				DEVELOPMENT_TEAM = M3T73X742T;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = AuraWallet/Info.plist;
@@ -268,7 +268,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 12.40.2;
+				MARKETING_VERSION = 27.27.20;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -291,7 +291,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 272720;
 				DEVELOPMENT_TEAM = M3T73X742T;
 				INFOPLIST_FILE = AuraWallet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -299,7 +299,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 12.40.2;
+				MARKETING_VERSION = 27.27.20;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

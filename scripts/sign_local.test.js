@@ -116,3 +116,4 @@ check('signature verifies locally',
 
 console.log(`\n${fail === 0 ? 'ALL PASSED' : fail + ' FAILED'} — signing happened entirely on-device, key never left the process.`);
 process.exit(fail ? 1 : 0);
+/* global BigInt, Buffer */

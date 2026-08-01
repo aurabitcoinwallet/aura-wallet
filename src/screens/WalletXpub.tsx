@@ -25,7 +25,7 @@ import { accountExtendedPublicKey } from '../wallets/derivation';
 import { triggerHaptic } from '../utils/haptics';
 import { copyEphemeralSecret } from '../utils/clipboard';
 import type { RootStackParamList } from '../navigation/types';
-import type { ScanResponse, ScriptType, WifScanResult } from '../types/index';
+import type { ScriptType } from '../types/index';
 
 type XpubNavigation = NativeStackNavigationProp<RootStackParamList, 'WalletXpub'>;
 type XpubRoute = RouteProp<RootStackParamList, 'WalletXpub'>;

@@ -6,7 +6,7 @@ Aura Wallet handles private keys and real funds, so we take security seriously.
 
 Please report security issues **privately** — do **not** open a public issue:
 
-- Use GitHub's [private vulnerability reporting](https://github.com/aurawallet1/aura-wallet/security/advisories/new), or
+- Use GitHub's [private vulnerability reporting](https://github.com/aurabitcoinwallet/aura-wallet/security/advisories/new), or
 - Contact the maintainers directly.
 
 Include clear steps to reproduce and the potential impact. We will acknowledge your
@@ -16,7 +16,7 @@ report, work with you on a fix, and coordinate disclosure once a patch is availa
 
 | Version | Supported |
 | ------- | --------- |
-| 1.x     | ✅        |
+| 27.x    | ✅        |
 
 ## Audit status
 

@@ -65,6 +65,7 @@ export const WalletAddressesScreen = (): React.ReactElement => {
   const { wallets, refreshWallet, denomination } = useWallets();
   const walletId = route.params.id;
   const entry = wallets.find(item => item.id === walletId);
+  const shouldRefresh = isStandardWallet(entry);
 
   const standardScan = isStandardWallet(entry)
     ? (entry?.scan as ScanResponse | null)
@@ -85,10 +86,10 @@ export const WalletAddressesScreen = (): React.ReactElement => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    if (isStandardWallet(entry)) {
+    if (shouldRefresh) {
       refreshWallet(walletId);
     }
-  }, [walletId]);
+  }, [refreshWallet, shouldRefresh, walletId]);
 
   useLayoutEffect(() => {
     navigation.setOptions({

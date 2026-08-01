@@ -1,4 +1,4 @@
-import type { FiatSource, FiatUnit } from '../types/index';
+import type { FiatUnit } from '../types/index';
 
 export type { FiatUnit, FiatSource } from '../types/index';
 

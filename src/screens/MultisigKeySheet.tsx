@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -40,9 +40,9 @@ export const MultisigKeySheetScreen = (): React.ReactElement => {
   const { index, mnemonic } = route.params;
   const words = useMemo(() => splitMnemonic(mnemonic), [mnemonic]);
 
-  const dismiss = (): void => {
+  const dismiss = useCallback((): void => {
     navigation.goBack();
-  };
+  }, [navigation]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -55,7 +55,7 @@ export const MultisigKeySheetScreen = (): React.ReactElement => {
         </Pressable>
       ),
     });
-  }, [navigation, palette.fg, palette.elevated]);
+  }, [dismiss, navigation, palette.fg, palette.elevated]);
 
   const chipDirection = { writingDirection: isRTL ? ('rtl' as const) : ('ltr' as const) };
 

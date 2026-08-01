@@ -13,6 +13,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 
 import { COLORS, RADIUS, SIZE, SPACING, TYPE } from '../theme';
+import { REPOSITORY_URL } from '../constants/urls';
 import loc from '../i18n';
 import { useWallets } from '../wallets/context';
 import type { RootStackParamList } from '../navigation/types';
@@ -26,8 +27,6 @@ type Highlight = {
   heading: string;
   detail: string;
 };
-
-const REPOSITORY_URL = 'https://github.com/aurawallet1/aura-wallet';
 
 const buildHighlights = (): Highlight[] => [
   {
@@ -87,7 +86,7 @@ export const OpenSourceScreen = (): React.ReactElement => {
   }, [navigation, palette.fg, palette.elevated]);
 
   const openRepository = () => {
-    Linking.openURL(REPOSITORY_URL);
+    Linking.openURL(REPOSITORY_URL).catch(() => undefined);
   };
 
   return (
