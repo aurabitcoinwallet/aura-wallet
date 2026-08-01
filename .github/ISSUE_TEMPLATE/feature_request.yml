@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest a focused improvement to Aura Wallet.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: Never include a recovery phrase, private key, wallet password, or sensitive vulnerability.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Explain the user need without including wallet data.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest useful change and any security or privacy impact.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Both
+        - Android
+        - iOS
+    validations:
+      required: true

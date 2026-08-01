@@ -7,9 +7,17 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
-const expectedVersion = '27.27.40';
+const expectedVersion = '27.27.60';
 const expectedRepository = 'https://github.com/aurabitcoinwallet/aura-wallet';
-const legacyRepository = 'https://github.com/aurawallet1/aura-wallet';
+const legacyRepositorySlug = 'aurawallet1/aura-wallet';
+const privateReportingUrl = `${expectedRepository}/security/advisories/new`;
+const forbiddenAuditDisclaimers = [
+  /(?:has|have) not (?:yet )?(?:been )?(?:formally )?audited/i,
+  /not (?:yet )?(?:been )?audited by (?:an? )?(?:independent|third[- ]party)/i,
+  /(?:has|have) not (?:yet )?undergone.{0,80}(?:independent|third[- ]party).{0,40}audit/i,
+  /(?:not|never) (?:independently|externally|third[- ]party) audited/i,
+  /لم يخضع.{0,100}(?:لتدقيق|لفحص).{0,100}(?:طرف ثالث|مستقل)/i,
+];
 
 const packageJson = JSON.parse(read('package.json'));
 const packageLock = JSON.parse(read('package-lock.json'));
@@ -18,15 +26,24 @@ const androidManifest = read('android/app/src/main/AndroidManifest.xml');
 const iosProject = read('ios/AuraWallet.xcodeproj/project.pbxproj');
 const iosInfo = read('ios/AuraWallet/Info.plist');
 const repositoryUrls = read('src/constants/urls.ts');
+const securityPolicy = read('SECURITY.md');
+const readme = read('README.md');
 const workflowFiles = ['.github/workflows/ci.yml', '.github/workflows/codeql.yml'];
+
+assert.ok(
+  forbiddenAuditDisclaimers.some(pattern =>
+    pattern.test('It has not yet undergone a formal third-party security audit.'),
+  ),
+  'audit-disclaimer guard must reject the retired wording',
+);
 
 assert.equal(packageJson.version, expectedVersion, 'package.json version mismatch');
 assert.equal(packageLock.version, expectedVersion, 'package-lock.json version mismatch');
 assert.equal(packageLock.packages[''].version, expectedVersion, 'lock root version mismatch');
-assert.match(androidGradle, /versionName\s+"27\.27\.40"/, 'Android versionName mismatch');
-assert.match(androidGradle, /versionCode\s+272740/, 'Android versionCode mismatch');
-assert.match(iosProject, /MARKETING_VERSION = 27\.27\.40;/, 'iOS marketing version mismatch');
-assert.match(iosProject, /CURRENT_PROJECT_VERSION = 272740;/, 'iOS build version mismatch');
+assert.match(androidGradle, /versionName\s+"27\.27\.60"/, 'Android versionName mismatch');
+assert.match(androidGradle, /versionCode\s+272760/, 'Android versionCode mismatch');
+assert.match(iosProject, /MARKETING_VERSION = 27\.27\.60;/, 'iOS marketing version mismatch');
+assert.match(iosProject, /CURRENT_PROJECT_VERSION = 272760;/, 'iOS build version mismatch');
 
 assert.doesNotMatch(
   androidGradle,
@@ -39,7 +56,9 @@ assert.match(androidManifest, /android:allowBackup="false"/, 'Android backup mus
 assert.match(iosInfo, /<key>NSAllowsArbitraryLoads<\/key>\s*<false\/>/, 'iOS ATS must remain enabled');
 assert.doesNotMatch(iosInfo, /NSAllowsLocalNetworking/, 'iOS must not bypass ATS for local networking');
 assert.doesNotMatch(iosInfo, /NSLocationWhenInUseUsageDescription/, 'unused location permission description must stay removed');
-assert.equal(fs.existsSync(path.join(root, 'SECURITY.md')), false, 'SECURITY.md must stay removed');
+assert.match(securityPolicy, /^# Security Policy/m, 'security policy heading is required');
+assert.ok(securityPolicy.includes(privateReportingUrl), 'security policy must use private reporting');
+assert.doesNotMatch(securityPolicy, /audit status/i, 'security policy must not publish an audit-status section');
 
 for (const workflowFile of workflowFiles) {
   const workflow = read(workflowFile);
@@ -51,7 +70,15 @@ for (const workflowFile of workflowFiles) {
 }
 
 assert.ok(repositoryUrls.includes(expectedRepository), 'repository URL mismatch');
-for (const relativePath of ['README.md', 'src']) {
+assert.ok(readme.includes(`v${expectedVersion}`), 'README release line mismatch');
+assert.equal(packageJson.description, 'Open-source self-custody Bitcoin wallet for iOS and Android.');
+assert.equal(packageJson.homepage, expectedRepository);
+assert.equal(packageJson.bugs.url, `${expectedRepository}/issues`);
+for (const [name, version] of Object.entries(packageJson.dependencies)) {
+  assert.match(version, /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/, `production dependency ${name} must be pinned`);
+}
+
+for (const relativePath of ['README.md', 'FAQ.md', 'SECURITY.md', 'docs', 'src']) {
   const fullPath = path.join(root, relativePath);
   const stack = [fullPath];
   while (stack.length) {
@@ -60,7 +87,11 @@ for (const relativePath of ['README.md', 'src']) {
     if (stat.isDirectory()) {
       for (const entry of fs.readdirSync(current)) stack.push(path.join(current, entry));
     } else if (/\.(?:md|ts|tsx)$/.test(current)) {
-      assert.ok(!fs.readFileSync(current, 'utf8').includes(legacyRepository), `legacy repository URL in ${current}`);
+      const contents = fs.readFileSync(current, 'utf8');
+      assert.ok(!contents.includes(legacyRepositorySlug), `legacy repository reference in ${current}`);
+      for (const pattern of forbiddenAuditDisclaimers) {
+        assert.doesNotMatch(contents, pattern, `unwanted audit disclaimer in ${current}`);
+      }
     }
   }
 }
