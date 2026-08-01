@@ -30,8 +30,6 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>In order to quickly scan the recipient's address, we need your permission to use the camera to scan their QR Code.</string>
@@ -39,8 +37,6 @@
 	<string>In order to scan a QR code from a saved image, we need your permission to access your photo library.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>In order to use Face ID to confirm your identity before unlocking the app, we need your permission.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>

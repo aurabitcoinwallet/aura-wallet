@@ -166,6 +166,7 @@ export const TransactionDetailScreen: React.FC = () => {
 
   const openInExplorer = useCallback(() => {
     const url = explorerTxUrl(blockExplorer, tx.txid);
+    if (!url) return;
     Linking.canOpenURL(url)
       .then(supported => {
         if (supported) Linking.openURL(url).catch(() => {});

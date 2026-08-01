@@ -10,7 +10,7 @@ updates:
       - "dependencies"
       - "security"
 
-  # CocoaPods (iOS native dependencies)
+  # Ruby tooling used by the iOS build
   - package-ecosystem: "bundler"
     directory: "/"
     schedule:

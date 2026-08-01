@@ -6,6 +6,8 @@
 You hold your own keys — they are generated on the device and never leave it.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![CI](https://github.com/aurabitcoinwallet/aura-wallet/actions/workflows/ci.yml/badge.svg)](https://github.com/aurabitcoinwallet/aura-wallet/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/aurabitcoinwallet/aura-wallet/actions/workflows/codeql.yml/badge.svg)](https://github.com/aurabitcoinwallet/aura-wallet/actions/workflows/codeql.yml)
 [![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android-blue.svg)](#)
 [![React Native](https://img.shields.io/badge/React%20Native-0.85-61dafb.svg)](https://reactnative.dev)
 [![Languages](https://img.shields.io/badge/i18n-40%20languages-orange.svg)](src/i18n)
@@ -22,7 +24,7 @@ You hold your own keys — they are generated on the device and never leave it.
 - ✍️ **Local signing.** Transactions are built and signed entirely on-device (BIP143). Keys never touch the wire.
 - 🧪 **Open source & verifiable.** Released under the MIT license. The cryptographic core is covered by tests that run against the app's *own* code using official BIP test vectors — see [Testing](#testing).
 
-> **Status:** current release line: `v27.27.20`. Review the code, try it, and open issues — feedback is welcome.
+> **Status:** current release line: `v27.27.40`. Review the code, try it, and open issues — feedback is welcome.
 
 ---
 
@@ -110,14 +112,12 @@ Aura's crypto is verifiable: the tests exercise the **real application modules**
 reimplemented inside the tests.
 
 ```sh
-# Component / app tests (Jest)
-npm test
+# Complete local verification: lint, types, unit tests, security checks,
+# Bitcoin vectors, and the crypto/signing self-test
+npm run verify
 
-# Official BIP test-vector verification against the app's own derivation & signing
-node scripts/aura-vectors.test.js
-
-# Full crypto-core self-test (derivation, signing, coin selection, throttling)
-LANG=en_US.UTF-8 node --import ./scripts/register.mjs --import tsx ./scripts/aura-selftest.ts
+# Dependency advisory audit
+npm run audit:dependencies
 ```
 
 ---
@@ -141,9 +141,15 @@ src/
 
 ## Contributing
 
-Contributions are welcome. Please open an issue to discuss substantial changes
-first, run the tests and `npm run lint` before submitting, and keep pull
-requests focused.
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), open an issue
+before substantial changes, and keep pull requests focused. Release maintainers
+should also follow [RELEASE.md](RELEASE.md).
+
+## Reporting sensitive issues
+
+Do not publish wallet vulnerabilities in a public issue. Use GitHub's
+[private vulnerability reporting](https://github.com/aurabitcoinwallet/aura-wallet/security/advisories/new)
+so maintainers can investigate and coordinate a fix privately.
 
 ---
 

@@ -1,0 +1,37 @@
+name: Bug report
+description: Report a reproducible Aura Wallet problem that is not security-sensitive.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Do not include seed phrases, private keys, wallet passwords, or sensitive vulnerabilities.
+  - type: input
+    id: version
+    attributes:
+      label: Aura Wallet version
+      placeholder: v27.27.40
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Android
+        - iOS
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Include clear reproduction steps and the expected result. Redact all wallet data.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs or screenshots
+      description: Remove addresses, transaction details, tokens, and all secret material before attaching.
