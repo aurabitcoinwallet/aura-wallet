@@ -1,14 +1,26 @@
 {
   "name": "aura-wallet",
-  "version": "27.27.20",
+  "version": "27.27.40",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aurabitcoinwallet/aura-wallet.git"
+  },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
     "start": "react-native start",
-    "test": "jest",
-    "security:check": "node scripts/release-security.test.js && node scripts/aura-security.test.js && node scripts/aura-alerts.test.js"
+    "test": "npm run test:unit",
+    "test:unit": "jest --runInBand",
+    "typecheck": "tsc --noEmit",
+    "test:security": "node scripts/release-security.test.js && node scripts/aura-security.test.js && node scripts/aura-alerts.test.js && node --import tsx scripts/aura-block-explorer.test.ts && node --import tsx scripts/aura-text-encoding.test.ts",
+    "test:vectors": "node scripts/aura-vectors.test.js",
+    "test:selftest": "node --import ./scripts/register.mjs --import tsx ./scripts/aura-selftest.ts",
+    "security:check": "npm run test:security",
+    "audit:dependencies": "npm audit --audit-level=high",
+    "verify": "npm run lint && npm run typecheck && npm run test:unit && npm run test:security && npm run test:vectors && npm run test:selftest"
   },
   "dependencies": {
     "@noble/curves": "^2.2.0",
@@ -19,11 +31,10 @@
     "@react-native-vector-icons/ionicons": "^13.1.1",
     "@react-native-vector-icons/material-design-icons": "^13.1.2",
     "@react-native-vector-icons/material-icons": "^13.1.2",
-    "@react-native/new-app-screen": "0.85.3",
+    "@borewit/text-codec": "0.2.2",
     "@react-navigation/native": "^7.2.5",
     "@react-navigation/native-stack": "^7.16.0",
     "@scure/bip39": "^2.2.0",
-    "@types/crypto-js": "^4.2.2",
     "crypto-js": "4.2.0",
     "dayjs": "^1.11.21",
     "qr": "^0.5.5",
@@ -42,8 +53,7 @@
     "react-native-svg": "^15.15.5",
     "react-native-tcp-socket": "^6.4.1",
     "react-native-url-polyfill": "^3.0.0",
-    "rn-qr-generator": "^2.0.0",
-    "text-encoding": "^0.7.0"
+    "rn-qr-generator": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -59,6 +69,7 @@
     "@react-native/typescript-config": "0.85.3",
     "@scure/bip32": "^1.7.0",
     "@scure/btc-signer": "^1.8.1",
+    "@types/crypto-js": "^4.2.2",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^19.1.0",

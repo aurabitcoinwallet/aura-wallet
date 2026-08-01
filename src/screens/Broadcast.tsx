@@ -108,7 +108,8 @@ export const BroadcastScreen: React.FC = () => {
   }, [rawHex]);
 
   const openInExplorer = useCallback(() => {
-    Linking.openURL(explorerTxUrl(blockExplorer, resultTxid)).catch(() => {});
+    const url = explorerTxUrl(blockExplorer, resultTxid);
+    if (url) Linking.openURL(url).catch(() => {});
   }, [blockExplorer, resultTxid]);
 
   const isSending = phase === 'sending';

@@ -7,7 +7,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
-const expectedVersion = '27.27.20';
+const expectedVersion = '27.27.40';
 const expectedRepository = 'https://github.com/aurabitcoinwallet/aura-wallet';
 const legacyRepository = 'https://github.com/aurawallet1/aura-wallet';
 
@@ -18,14 +18,15 @@ const androidManifest = read('android/app/src/main/AndroidManifest.xml');
 const iosProject = read('ios/AuraWallet.xcodeproj/project.pbxproj');
 const iosInfo = read('ios/AuraWallet/Info.plist');
 const repositoryUrls = read('src/constants/urls.ts');
+const workflowFiles = ['.github/workflows/ci.yml', '.github/workflows/codeql.yml'];
 
 assert.equal(packageJson.version, expectedVersion, 'package.json version mismatch');
 assert.equal(packageLock.version, expectedVersion, 'package-lock.json version mismatch');
 assert.equal(packageLock.packages[''].version, expectedVersion, 'lock root version mismatch');
-assert.match(androidGradle, /versionName\s+"27\.27\.20"/, 'Android versionName mismatch');
-assert.match(androidGradle, /versionCode\s+272720/, 'Android versionCode mismatch');
-assert.match(iosProject, /MARKETING_VERSION = 27\.27\.20;/, 'iOS marketing version mismatch');
-assert.match(iosProject, /CURRENT_PROJECT_VERSION = 272720;/, 'iOS build version mismatch');
+assert.match(androidGradle, /versionName\s+"27\.27\.40"/, 'Android versionName mismatch');
+assert.match(androidGradle, /versionCode\s+272740/, 'Android versionCode mismatch');
+assert.match(iosProject, /MARKETING_VERSION = 27\.27\.40;/, 'iOS marketing version mismatch');
+assert.match(iosProject, /CURRENT_PROJECT_VERSION = 272740;/, 'iOS build version mismatch');
 
 assert.doesNotMatch(
   androidGradle,
@@ -36,9 +37,21 @@ assert.match(androidGradle, /signingConfig\s+signingConfigs\.release/, 'producti
 assert.match(androidGradle, /usesCleartextTraffic:\s*"false"/, 'Android release must reject HTTP');
 assert.match(androidManifest, /android:allowBackup="false"/, 'Android backup must remain disabled');
 assert.match(iosInfo, /<key>NSAllowsArbitraryLoads<\/key>\s*<false\/>/, 'iOS ATS must remain enabled');
+assert.doesNotMatch(iosInfo, /NSAllowsLocalNetworking/, 'iOS must not bypass ATS for local networking');
+assert.doesNotMatch(iosInfo, /NSLocationWhenInUseUsageDescription/, 'unused location permission description must stay removed');
+assert.equal(fs.existsSync(path.join(root, 'SECURITY.md')), false, 'SECURITY.md must stay removed');
+
+for (const workflowFile of workflowFiles) {
+  const workflow = read(workflowFile);
+  const actionRefs = [...workflow.matchAll(/uses:\s+[^\s@]+@([^\s#]+)/g)].map(match => match[1]);
+  assert.ok(actionRefs.length > 0, `${workflowFile} must use at least one action`);
+  for (const ref of actionRefs) {
+    assert.match(ref, /^[0-9a-f]{40}$/, `${workflowFile} action must be pinned to a full commit SHA`);
+  }
+}
 
 assert.ok(repositoryUrls.includes(expectedRepository), 'repository URL mismatch');
-for (const relativePath of ['README.md', 'SECURITY.md', 'src']) {
+for (const relativePath of ['README.md', 'src']) {
   const fullPath = path.join(root, relativePath);
   const stack = [fullPath];
   while (stack.length) {
