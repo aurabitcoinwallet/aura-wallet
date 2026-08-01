@@ -11,7 +11,7 @@ body:
     id: version
     attributes:
       label: Aura Wallet version
-      placeholder: v27.27.40
+      placeholder: v27.27.60
     validations:
       required: true
   - type: dropdown

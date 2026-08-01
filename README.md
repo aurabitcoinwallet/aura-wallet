@@ -1,159 +1,151 @@
 <div align="center">
 
+<img src="img/about-logo.png" width="112" alt="Aura Wallet logo" />
+
 # Aura Wallet
 
-**A self-custody Bitcoin wallet for iOS & Android.**
-You hold your own keys — they are generated on the device and never leave it.
+**Open-source, self-custody Bitcoin wallet for iOS and Android.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+Your recovery phrase and private keys are created and handled on your device.
+
+[![Latest release](https://img.shields.io/github/v/release/aurabitcoinwallet/aura-wallet?display_name=tag)](https://github.com/aurabitcoinwallet/aura-wallet/releases/latest)
 [![CI](https://github.com/aurabitcoinwallet/aura-wallet/actions/workflows/ci.yml/badge.svg)](https://github.com/aurabitcoinwallet/aura-wallet/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/aurabitcoinwallet/aura-wallet/actions/workflows/codeql.yml/badge.svg)](https://github.com/aurabitcoinwallet/aura-wallet/actions/workflows/codeql.yml)
-[![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android-blue.svg)](#)
+[![MIT License](https://img.shields.io/github/license/aurabitcoinwallet/aura-wallet)](LICENSE)
 [![React Native](https://img.shields.io/badge/React%20Native-0.85-61dafb.svg)](https://reactnative.dev)
-[![Languages](https://img.shields.io/badge/i18n-40%20languages-orange.svg)](src/i18n)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
+[![Languages](https://img.shields.io/badge/languages-40-orange.svg)](src/i18n)
+
+[App Store](https://apps.apple.com/app/id6749847943) ·
+[Releases](https://github.com/aurabitcoinwallet/aura-wallet/releases) ·
+[Community](https://t.me/aurabitcoinwallet) ·
+[Report a vulnerability](https://github.com/aurabitcoinwallet/aura-wallet/security/advisories/new)
 
 </div>
 
 ---
 
-## Why Aura
+## About Aura
 
-- 🔐 **True self-custody.** Your seed, passphrases and private keys are generated and stored **on the device only** — encrypted in the system keychain. They are never transmitted to any server.
-- 🌐 **The network sees only public data.** Balances and history are read from Electrum servers (with a mempool.space fallback) using scripthashes and public addresses. Only the final **signed** transaction hex is broadcast.
-- ✍️ **Local signing.** Transactions are built and signed entirely on-device (BIP143). Keys never touch the wire.
-- 🧪 **Open source & verifiable.** Released under the MIT license. The cryptographic core is covered by tests that run against the app's *own* code using official BIP test vectors — see [Testing](#testing).
+Aura Wallet is an independent open-source Bitcoin wallet built around one clear
+boundary: the user controls the keys. Wallet creation, recovery, address derivation,
+transaction construction, and signing happen inside the mobile application.
 
-> **Status:** current release line: `v27.27.40`. Review the code, try it, and open issues — feedback is welcome.
+The project is developed publicly under the MIT license. Source changes are checked
+with linting, TypeScript, wallet security invariants, official Bitcoin test vectors,
+cryptographic signing tests, dependency advisories, CodeQL, and an Android build.
 
----
+Current release line: **v27.27.60**.
 
-## About us
+## Capabilities
 
-Aura Wallet is built by a **small, independent team** with one belief at its core:
-**you should be the only person who can touch your money.**
+- BIP32 and BIP39 hierarchical deterministic wallets.
+- BIP44, BIP49, and BIP84 address derivation.
+- Legacy, Nested SegWit, Native SegWit, and Taproot recipients.
+- `m-of-n` multisig wallet creation and import.
+- Coin control, custom fees, change-address selection, and UTXO labels.
+- QR scanning and generation, message signing, and watch-only exports.
+- Biometric or passcode application lock.
+- 40 interface languages.
 
-We started Aura because most "Bitcoin wallets" ask you to trust a server, a company,
-or a black box you can't inspect. We wanted the opposite — a wallet where the keys
-are generated on your phone, never leave it, and where *anyone* can read exactly how
-that works.
+## Security and privacy boundaries
 
-That is why the whole project is **fully open source** under the MIT license. Every
-line that derives your keys or signs your transactions is public, auditable, and
-continuously checked against official Bitcoin (BIP) test vectors — no hidden servers,
-no custody, no tracking on the crypto path.
+| Area | Aura behavior |
+| --- | --- |
+| Key material | Mnemonics, passphrases, and private keys are generated and used on-device. |
+| Stored wallets | Wallet records are encrypted before persistence; the device key is protected by the system keychain. |
+| Blockchain data | Aura connects to Electrum servers using wallet scripthashes. |
+| Optional fallback | Direct address queries to mempool.space are disabled by default and require the user to enable them. |
+| Spending | Transactions are assembled and signed locally; only signed transaction data is broadcast. |
+| External links | Custom block explorers must use HTTPS and transaction IDs are validated before opening. |
 
-We are early and building in the open. If you share these values, read the code, try
-the app, open an issue, or send a pull request — you're welcome here.
+More detail is available in [Architecture](docs/ARCHITECTURE.md) and
+[FAQ](FAQ.md). Sensitive findings must be submitted through
+[private vulnerability reporting](SECURITY.md).
 
-**Project home:** <https://github.com/aurabitcoinwallet/aura-wallet>
+## Project layout
 
----
+```text
+src/
+├── components/   Shared interface components
+├── constants/    Project-wide constants
+├── i18n/         Localized interface text
+├── navigation/   Navigation stacks and route types
+├── network/      Electrum, mempool, fees, rates, and explorers
+├── polyfills/    Runtime compatibility shims
+├── screens/      Application screens
+├── types/        Shared TypeScript contracts
+├── utils/        Storage, encryption, and platform helpers
+└── wallets/      Derivation, scanning, signing, and transactions
+```
 
-## Features
+Native projects live in `android/` and `ios/`. Automated verification lives in
+`scripts/`, `__tests__/`, and `.github/workflows/`.
 
-- **HD wallets** — BIP32 / BIP39 / BIP44 / BIP49 / BIP84 (Legacy, Nested SegWit, Native SegWit).
-- **Multisig** — create and import `m-of-n` multisig wallets with an advanced setup flow.
-- **Send & receive** — coin control, change-address selection, custom network fees, and QR scan / generation.
-- **Import & export** — restore from mnemonic, discover used addresses, and export public keys (xpub) for watch-only use.
-- **Sign & verify** messages with your keys.
-- **Security** — biometric / passcode lock screen, keychain-backed storage, and a stealth holding mode.
-- **40 languages** — fully internationalized UI ([`src/i18n`](src/i18n)).
+## Build and run
 
----
+Requirements:
 
-## How it works
-
-| Layer | What happens | What leaves the device |
-| --- | --- | --- |
-| **Keys** | HD wallets derived locally with `@noble` / `@scure`. Mnemonics, passphrases & private keys stay on-device, encrypted in the keychain. | Nothing. |
-| **Reading state** | Balances & history fetched from Electrum servers (mempool.space fallback). | Scripthashes & public addresses only. |
-| **Spending** | Transactions assembled and signed on-device (BIP143 / P2WPKH). | The signed transaction hex only. |
-
-No `Buffer` or Node polyfills are used on the crypto path.
-
----
-
-## Tech stack
-
-**React Native 0.85** · **React 19** · **TypeScript**
-
-- **Cryptography:** [`@noble/curves`](https://github.com/paulmillr/noble-curves) · [`@noble/hashes`](https://github.com/paulmillr/noble-hashes) · [`@scure/bip39`](https://github.com/paulmillr/scure-bip39) · [`@scure/bip32`](https://github.com/paulmillr/scure-bip32) · [`@scure/base`](https://github.com/paulmillr/scure-base)
-- **Networking:** Electrum over [`react-native-tcp-socket`](https://github.com/Rapsssito/react-native-tcp-socket)
-- **Secure storage:** [`react-native-keychain`](https://github.com/oblador/react-native-keychain) · [`react-native-biometrics`](https://github.com/SelfLender/react-native-biometrics)
-
----
-
-## Getting started
-
-**Requirements:** Node `>= 22.11.0`, and the [React Native environment](https://reactnative.dev/docs/set-up-your-environment) set up for iOS and/or Android.
+- Node.js 22.11 or newer.
+- The current React Native environment for the target platform.
+- Xcode and CocoaPods for iOS, or Android Studio and Java 17 for Android.
 
 ```sh
-# 1. Install dependencies
-npm install
+git clone https://github.com/aurabitcoinwallet/aura-wallet.git
+cd aura-wallet
+npm ci
+```
 
-# 2. iOS only — install native pods
-cd ios && pod install && cd ..
+Start Metro:
 
-# 3. Start the Metro bundler
+```sh
 npm start
+```
 
-# 4. Run the app (in a second terminal)
-npm run ios       # or
+Run a platform build in another terminal:
+
+```sh
+npm run ios
+# or
 npm run android
 ```
 
----
+For iOS native dependencies, run `bundle install` and `bundle exec pod install`
+inside `ios/` when required by your local toolchain.
 
-## Testing
+## Verification
 
-Aura's crypto is verifiable: the tests exercise the **real application modules** in
-[`src/wallets/`](src/wallets) and [`src/network/`](src/network) — no vector value is
-reimplemented inside the tests.
+The verification suite exercises Aura's application modules rather than replacing
+them with test-only wallet implementations.
 
 ```sh
-# Complete local verification: lint, types, unit tests, security checks,
-# Bitcoin vectors, and the crypto/signing self-test
 npm run verify
-
-# Dependency advisory audit
 npm run audit:dependencies
 ```
 
----
+`npm run verify` includes linting, TypeScript, Jest, release invariants, encryption
+and network security tests, official Bitcoin vectors, and the signing self-test.
+Pull requests also run CodeQL and build the Android application on GitHub Actions.
 
-## Project structure
+## Project information
 
-```
-src/
-├── components/   Reusable UI components
-├── constants/    App-wide constants
-├── i18n/         40 language files
-├── navigation/   React Navigation stacks
-├── network/      Electrum, mempool, rates, block explorers
-├── screens/      51 app screens
-├── types/        Shared TypeScript types
-├── utils/        Helpers
-└── wallets/      Derivation, signing, transactions, scanning (crypto core)
-```
-
----
+| Resource | Purpose |
+| --- | --- |
+| [FAQ](FAQ.md) | User-facing answers about custody, recovery, and network access. |
+| [Architecture](docs/ARCHITECTURE.md) | Module boundaries and data flows. |
+| [Contributing](CONTRIBUTING.md) | Development and pull-request expectations. |
+| [Release process](RELEASE.md) | Required release checks and signing rules. |
+| [Code of Conduct](CODE_OF_CONDUCT.md) | Community participation standards. |
+| [Security Policy](SECURITY.md) | Private vulnerability reporting. |
 
 ## Contributing
 
-Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), open an issue
-before substantial changes, and keep pull requests focused. Release maintainers
-should also follow [RELEASE.md](RELEASE.md).
-
-## Reporting sensitive issues
-
-Do not publish wallet vulnerabilities in a public issue. Use GitHub's
-[private vulnerability reporting](https://github.com/aurabitcoinwallet/aura-wallet/security/advisories/new)
-so maintainers can investigate and coordinate a fix privately.
-
----
+Focused issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+before changing wallet storage, key derivation, signing, transaction construction,
+or networking. Never include real wallet secrets or user data in reports, tests,
+screenshots, or logs.
 
 ## License
 
-Released under the **MIT License** — see [LICENSE](LICENSE).
+Aura Wallet is released under the [MIT License](LICENSE).
+
 © 2026 Aura Wallet.
