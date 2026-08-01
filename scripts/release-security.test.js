@@ -9,7 +9,7 @@ const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf
 
 const expectedVersion = '27.27.60';
 const expectedRepository = 'https://github.com/aurabitcoinwallet/aura-wallet';
-const legacyRepository = 'https://github.com/aurawallet1/aura-wallet';
+const legacyRepositorySlug = 'aurawallet1/aura-wallet';
 const privateReportingUrl = `${expectedRepository}/security/advisories/new`;
 const forbiddenAuditDisclaimers = [
   /(?:has|have) not (?:yet )?(?:been )?(?:formally )?audited/i,
@@ -88,7 +88,7 @@ for (const relativePath of ['README.md', 'FAQ.md', 'SECURITY.md', 'docs', 'src']
       for (const entry of fs.readdirSync(current)) stack.push(path.join(current, entry));
     } else if (/\.(?:md|ts|tsx)$/.test(current)) {
       const contents = fs.readFileSync(current, 'utf8');
-      assert.ok(!contents.includes(legacyRepository), `legacy repository URL in ${current}`);
+      assert.ok(!contents.includes(legacyRepositorySlug), `legacy repository reference in ${current}`);
       for (const pattern of forbiddenAuditDisclaimers) {
         assert.doesNotMatch(contents, pattern, `unwanted audit disclaimer in ${current}`);
       }
