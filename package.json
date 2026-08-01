@@ -1,13 +1,14 @@
 {
   "name": "aura-wallet",
-  "version": "27.27.0",
+  "version": "27.27.20",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "security:check": "node scripts/release-security.test.js && node scripts/aura-security.test.js && node scripts/aura-alerts.test.js"
   },
   "dependencies": {
     "@noble/curves": "^2.2.0",
@@ -48,9 +49,9 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
-    "@react-native-community/cli": "20.1.0",
-    "@react-native-community/cli-platform-android": "20.1.0",
-    "@react-native-community/cli-platform-ios": "20.1.0",
+    "@react-native-community/cli": "20.2.0",
+    "@react-native-community/cli-platform-android": "20.2.0",
+    "@react-native-community/cli-platform-ios": "20.2.0",
     "@react-native/babel-preset": "0.85.3",
     "@react-native/eslint-config": "0.85.3",
     "@react-native/jest-preset": "0.85.3",

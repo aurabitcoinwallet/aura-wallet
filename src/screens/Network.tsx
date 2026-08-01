@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -40,12 +40,12 @@ export const NetworkScreen = (): React.ReactElement => {
   const isDark = useColorScheme() === 'dark';
   const palette = isDark ? COLORS.dark : COLORS.light;
   const navigation = useNavigation<NetworkNavigation>();
-  const { isRTL } = useWallets();
+  useWallets();
 
   const pageBg = isDark ? palette.bg : palette.cardGray;
   const cellBg = isDark ? palette.cardGray : palette.bg;
 
-  const rows = useMemo(() => buildRows(), [isRTL]);
+  const rows = buildRows();
 
   useLayoutEffect(() => {
     navigation.setOptions({

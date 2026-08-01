@@ -54,3 +54,4 @@ check('P2PKH encoder (classic vector)', p2pkh(classicPub), '1PMycacnJaSqwwJqjawX
 
 console.log(`\n${fail === 0 ? 'ALL PASSED' : fail + ' FAILED'} — addresses generated locally, no network, no secret transmitted.`);
 process.exit(fail ? 1 : 0);
+/* global TextEncoder, BigInt, Buffer */

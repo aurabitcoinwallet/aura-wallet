@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
 import { Pressable, StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -19,7 +19,7 @@ export function BackupWarningSheet(): React.ReactElement {
   const palette = dark ? COLORS.dark : COLORS.light;
   const navigation = useNavigation<BackupWarningNav>();
 
-  const dismiss = (): void => navigation.goBack();
+  const dismiss = useCallback((): void => navigation.goBack(), [navigation]);
 
   useLayoutEffect(() => {
     const surface = palette.elevated;
@@ -35,7 +35,7 @@ export function BackupWarningSheet(): React.ReactElement {
         );
       },
     });
-  }, [navigation, palette.fg, palette.elevated]);
+  }, [dismiss, navigation, palette.fg, palette.elevated]);
 
   return (
     <View style={[styles.sheet, { backgroundColor: palette.elevated }]}>

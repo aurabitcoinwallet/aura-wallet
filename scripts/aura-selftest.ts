@@ -31,8 +31,6 @@ import {
   deriveAddressNode,
   toWIF,
   encodeP2WPKH,
-  encodeP2SHP2WPKH,
-  encodeP2PKH,
 } from '../src/wallets/derivation';
 import {
   buildSignedTransaction,
@@ -448,8 +446,9 @@ function bip143Sighash(
 section('4) Network 429 throttle + retry/backoff');
 
 const mempoolSrc = readFileSync(path.join(ROOT, 'src/network/mempool.ts'), 'utf8');
-const hasThrottle = /async function throttle\s*\(/.test(mempoolSrc) &&
-  /nextRequestAt/.test(mempoolSrc);
+const hasThrottle = /MAX_CONCURRENT/.test(mempoolSrc) &&
+  /acquireSlot/.test(mempoolSrc) &&
+  /releaseSlot/.test(mempoolSrc);
 const handles429 =
   /RETRYABLE_STATUS\s*=\s*new Set\(\[[^\]]*429/.test(mempoolSrc) &&
   /backoffMs\s*\(/.test(mempoolSrc) &&
@@ -457,7 +456,7 @@ const handles429 =
 const hasBackoffLoop = /for\s*\(let attempt = 0; attempt <= MAX_RETRIES/.test(mempoolSrc);
 
 assertTrue('mempool.ts has request throttle', hasThrottle,
-  hasThrottle ? 'throttle() + nextRequestAt present' : 'throttle missing');
+  hasThrottle ? 'bounded concurrent request slots present' : 'request throttle missing');
 assertTrue('mempool.ts retries on HTTP 429 w/ backoff', handles429 && hasBackoffLoop,
   `429 in RETRYABLE_STATUS + backoffMs(Retry-After) + retry loop present`);
 

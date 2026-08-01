@@ -15,6 +15,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 import { COLORS, RADIUS, SPACING, TYPE } from '../theme';
+import { REPOSITORY_URL } from '../constants/urls';
 import loc from '../i18n';
 import { useWallets } from '../wallets/context';
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -34,7 +35,6 @@ type SocialLink = {
 const AURA_LOGO = require('../../img/about-logo.png');
 
 const TELEGRAM_URL = 'https://t.me/aurabitcoinwallet';
-const GITHUB_URL = 'https://github.com/aurawallet1/aura-wallet';
 const REVIEW_URL = 'https://apps.apple.com/app/id6749847943?action=write-review';
 
 const buildSocialLinks = (): SocialLink[] => [
@@ -48,7 +48,7 @@ const buildSocialLinks = (): SocialLink[] => [
     id: 'github',
     glyph: 'logo-github',
     title: loc.prefs.sourceRepoLink,
-    url: GITHUB_URL,
+    url: REPOSITORY_URL,
   },
 ];
 

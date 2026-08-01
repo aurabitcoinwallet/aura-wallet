@@ -72,6 +72,12 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+def releaseStoreFile = findProperty('AURA_RELEASE_STORE_FILE') ?: System.getenv('AURA_RELEASE_STORE_FILE')
+def releaseStorePassword = findProperty('AURA_RELEASE_STORE_PASSWORD') ?: System.getenv('AURA_RELEASE_STORE_PASSWORD')
+def releaseKeyAlias = findProperty('AURA_RELEASE_KEY_ALIAS') ?: System.getenv('AURA_RELEASE_KEY_ALIAS')
+def releaseKeyPassword = findProperty('AURA_RELEASE_KEY_PASSWORD') ?: System.getenv('AURA_RELEASE_KEY_PASSWORD')
+def hasReleaseSigning = [releaseStoreFile, releaseStorePassword, releaseKeyAlias, releaseKeyPassword].every { it }
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -82,8 +88,8 @@ android {
         applicationId "com.aurawallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 272720
+        versionName "27.27.20"
     }
     signingConfigs {
         debug {
@@ -91,6 +97,14 @@ android {
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        if (hasReleaseSigning) {
+            release {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
         }
     }
     buildTypes {
@@ -100,14 +114,27 @@ android {
             manifestPlaceholders = [usesCleartextTraffic: "true"]
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // Never sign production builds with the checked-in debug key.
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             // Production is TLS-only — block plaintext HTTP traffic.
             manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
+    }
+}
+
+// Fail closed when a release task is requested without all production signing
+// credentials. Debug builds remain available to contributors.
+gradle.taskGraph.whenReady { graph ->
+    def releaseRequested = graph.allTasks.any { it.name.toLowerCase().contains('release') }
+    if (releaseRequested && !hasReleaseSigning) {
+        throw new GradleException(
+            'Release signing is not configured. Set AURA_RELEASE_STORE_FILE, ' +
+            'AURA_RELEASE_STORE_PASSWORD, AURA_RELEASE_KEY_ALIAS, and AURA_RELEASE_KEY_PASSWORD.'
+        )
     }
 }
 

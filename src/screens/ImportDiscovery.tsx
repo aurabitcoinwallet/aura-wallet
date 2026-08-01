@@ -109,7 +109,7 @@ export const ImportDiscoveryScreen = () => {
     return () => {
       active = false;
     };
-  }, [mnemonic, askPassphrase]);
+  }, [addWallet, askPassphrase, mnemonic, name, navigation, origin, wif]);
 
   return (
     <View style={[styles.container, { backgroundColor: palette.bg }]}>
